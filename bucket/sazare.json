@@ -1,21 +1,21 @@
 {
-    "version": "0.6.1",
-    "description": "Single-binary FHIR R4 server — the easiest way to run FHIR locally",
-    "homepage": "https://github.com/fu-foo/fhir-sazare",
-    "license": "Apache-2.0",
-    "architecture": {
-        "64bit": {
-            "url": "https://github.com/fu-foo/fhir-sazare/releases/download/v0.6.1/sazare-server-windows-amd64.zip",
-            "hash": "b6237c51fad872f06441a310894773fc310d5c86c122ad69a0854244daab951b"
-        }
-    },
-    "bin": "sazare-server.exe",
-    "checkver": "github",
-    "autoupdate": {
-        "architecture": {
-            "64bit": {
-                "url": "https://github.com/fu-foo/fhir-sazare/releases/download/v$version/sazare-server-windows-amd64.zip"
-            }
-        }
+  "version": "0.6.2",
+  "description": "Single-binary FHIR R4 server — the easiest way to run FHIR locally",
+  "homepage": "https://github.com/fu-foo/fhir-sazare",
+  "license": "Apache-2.0",
+  "architecture": {
+    "64bit": {
+      "url": "https://github.com/fu-foo/fhir-sazare/releases/download/v0.6.2/sazare-server-windows-amd64.zip",
+      "hash": "22f12fd89f19d69aa9296beafcba409eebe8e66d037cf0d59b7b1df47c541f2e"
     }
+  },
+  "bin": "sazare-server.exe",
+  "checkver": "github",
+  "autoupdate": {
+    "architecture": {
+      "64bit": {
+        "url": "https://github.com/fu-foo/fhir-sazare/releases/download/v$version/sazare-server-windows-amd64.zip"
+      }
+    }
+  }
 }
