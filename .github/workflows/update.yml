@@ -1,6 +1,6 @@
 name: Update manifest
 
-# Keeps bucket/sazare.json in sync with the latest fhir-sazare release.
+# Keeps every manifest here in sync with its project's latest release.
 # Uses only the repo's own GITHUB_TOKEN (reads the public release, writes here),
 # so there is no cross-repo PAT to manage. Run it on demand from the Actions tab
 # right after a release, or let the daily schedule pick it up.
@@ -18,27 +18,43 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Sync manifest to latest release
+      - name: Sync manifests to their latest releases
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          REPO=fu-foo/fhir-sazare
-          TAG=$(gh release view --repo "$REPO" --json tagName -q .tagName)
-          VER=${TAG#v}
-          CUR=$(jq -r .version bucket/sazare.json)
-          if [ "$VER" = "$CUR" ]; then
-            echo "Manifest already at $VER — nothing to do."
-            exit 0
-          fi
-          echo "Updating manifest $CUR -> $VER"
-          URL="https://github.com/$REPO/releases/download/v$VER/sazare-server-windows-amd64.zip"
-          HASH=$(curl -fsSL "$URL" | sha256sum | cut -d' ' -f1)
-          tmp=$(mktemp)
-          jq --arg v "$VER" --arg u "$URL" --arg h "$HASH" \
-            '.version=$v | .architecture."64bit".url=$u | .architecture."64bit".hash=$h' \
-            bucket/sazare.json > "$tmp"
-          mv "$tmp" bucket/sazare.json
+
+          # manifest:repo:asset — one line per package. Adding a project is
+          # adding a line, not another workflow.
+          packages="
+          bucket/sazare.json:fu-foo/fhir-sazare:sazare-server-windows-amd64.zip
+          bucket/fugantt.json:fu-foo/fugantt:fugantt-windows-x86_64.zip
+          "
+
+          for package in $packages; do
+            manifest=${package%%:*}
+            rest=${package#*:}
+            repo=${rest%%:*}
+            asset=${rest#*:}
+
+            TAG=$(gh release view --repo "$repo" --json tagName -q .tagName)
+            VER=${TAG#v}
+            CUR=$(jq -r .version "$manifest")
+
+            if [ "$VER" = "$CUR" ]; then
+              echo "$manifest: already at $VER"
+              continue
+            fi
+
+            echo "$manifest: $CUR -> $VER"
+            URL="https://github.com/$repo/releases/download/v$VER/$asset"
+            HASH=$(curl -fsSL "$URL" | sha256sum | cut -d' ' -f1)
+            tmp=$(mktemp)
+            jq --arg v "$VER" --arg u "$URL" --arg h "$HASH" \
+              '.version=$v | .architecture."64bit".url=$u | .architecture."64bit".hash=$h' \
+              "$manifest" > "$tmp"
+            mv "$tmp" "$manifest"
+          done
 
       - name: Commit if changed
         run: |
@@ -49,7 +65,9 @@ jobs:
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          VER=$(jq -r .version bucket/sazare.json)
-          git add bucket/sazare.json
-          git commit -m "Update sazare to v$VER"
+          for manifest in $(git diff --name-only); do
+            name=$(basename "$manifest" .json)
+            git add "$manifest"
+            git commit -m "Update $name to v$(jq -r .version "$manifest")"
+          done
           git push
