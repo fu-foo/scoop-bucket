@@ -1,12 +1,12 @@
 {
-  "version": "0.6.1",
+  "version": "0.7.1",
   "description": "Gantt chart built around Japanese practice: plan against actual, counted in working days",
   "homepage": "https://github.com/fu-foo/fugantt",
   "license": "Apache-2.0",
   "architecture": {
     "64bit": {
-      "url": "https://github.com/fu-foo/fugantt/releases/download/v0.6.1/fugantt-windows-x86_64.zip",
-      "hash": "395b036a10477ad30e0e26164b9251277e34b411c94864e8cba3791e462bfda2",
+      "url": "https://github.com/fu-foo/fugantt/releases/download/v0.7.1/fugantt-windows-x86_64.zip",
+      "hash": "cfa82a796933480d20d1eb9620a851a960a95f2588be778c34068d4f8777715c",
       "extract_dir": "fugantt-windows-x86_64"
     }
   },
