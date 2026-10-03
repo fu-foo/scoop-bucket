@@ -30,6 +30,7 @@ jobs:
           bucket/sazare.json:fu-foo/fhir-sazare:sazare-server-windows-amd64.zip
           bucket/fugantt.json:fu-foo/fugantt:fugantt-windows-x86_64.zip
           bucket/fuwinlauncher.json:fu-foo/FuWinLauncher:FuWinLauncher-x64.exe:FuWinLauncher-x86.exe
+          bucket/fuashiato.json:fu-foo/FuAshiAto:fuashiato-x64.exe
           "
 
           # Point one architecture of $manifest at $asset of release v$VER

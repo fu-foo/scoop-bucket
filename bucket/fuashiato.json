@@ -1,0 +1,23 @@
+{
+  "version": "0.2.0",
+  "description": "Records the footprints of your own work on Windows: foreground window, idle, lock and sleep",
+  "homepage": "https://github.com/fu-foo/FuAshiAto",
+  "license": "Apache-2.0",
+  "architecture": {
+    "64bit": {
+      "url": "https://github.com/fu-foo/FuAshiAto/releases/download/v0.2.0/fuashiato-x64.exe#/fuashiato.exe",
+      "hash": "7741728694e6c7bd38886031c9c42dbe884a2d460b4030b8da4dcd005de1c226"
+    }
+  },
+  "bin": "fuashiato.exe",
+  "persist": "logs",
+  "pre_uninstall": "if (Test-Path \"$dir\\fuashiato.exe\") { & \"$dir\\fuashiato.exe\" stop | Out-Null }",
+  "checkver": "github",
+  "autoupdate": {
+    "architecture": {
+      "64bit": {
+        "url": "https://github.com/fu-foo/FuAshiAto/releases/download/v$version/fuashiato-x64.exe#/fuashiato.exe"
+      }
+    }
+  }
+}
