@@ -24,18 +24,32 @@ jobs:
         run: |
           set -euo pipefail
 
-          # manifest:repo:asset — one line per package. Adding a project is
-          # adding a line, not another workflow.
+          # manifest:repo:asset64[:asset32] — one line per package. Adding a
+          # project is adding a line, not another workflow.
           packages="
           bucket/sazare.json:fu-foo/fhir-sazare:sazare-server-windows-amd64.zip
           bucket/fugantt.json:fu-foo/fugantt:fugantt-windows-x86_64.zip
+          bucket/fuwinlauncher.json:fu-foo/FuWinLauncher:FuWinLauncher-x64.exe:FuWinLauncher-x86.exe
           "
 
+          # Point one architecture of $manifest at $asset of release v$VER
+          update_arch() {
+            local arch=$1 asset=$2 old frag url hash tmp
+            # Keep any "#/name" rename suffix the manifest already uses
+            old=$(jq -r --arg a "$arch" '.architecture[$a].url' "$manifest")
+            frag=""
+            case "$old" in *"#"*) frag="#${old#*#}" ;; esac
+            url="https://github.com/$repo/releases/download/v$VER/$asset"
+            hash=$(curl -fsSL "$url" | sha256sum | cut -d' ' -f1)
+            tmp=$(mktemp)
+            jq --arg a "$arch" --arg u "$url$frag" --arg h "$hash" \
+              '.architecture[$a].url=$u | .architecture[$a].hash=$h' \
+              "$manifest" > "$tmp"
+            mv "$tmp" "$manifest"
+          }
+
           for package in $packages; do
-            manifest=${package%%:*}
-            rest=${package#*:}
-            repo=${rest%%:*}
-            asset=${rest#*:}
+            IFS=: read -r manifest repo asset64 asset32 <<< "$package"
 
             TAG=$(gh release view --repo "$repo" --json tagName -q .tagName)
             VER=${TAG#v}
@@ -47,12 +61,12 @@ jobs:
             fi
 
             echo "$manifest: $CUR -> $VER"
-            URL="https://github.com/$repo/releases/download/v$VER/$asset"
-            HASH=$(curl -fsSL "$URL" | sha256sum | cut -d' ' -f1)
+            update_arch 64bit "$asset64"
+            if [ -n "${asset32:-}" ]; then
+              update_arch 32bit "$asset32"
+            fi
             tmp=$(mktemp)
-            jq --arg v "$VER" --arg u "$URL" --arg h "$HASH" \
-              '.version=$v | .architecture."64bit".url=$u | .architecture."64bit".hash=$h' \
-              "$manifest" > "$tmp"
+            jq --arg v "$VER" '.version=$v' "$manifest" > "$tmp"
             mv "$tmp" "$manifest"
           done
 
