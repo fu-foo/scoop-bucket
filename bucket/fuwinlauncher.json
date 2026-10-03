@@ -1,16 +1,16 @@
 {
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Lightweight keyboard-driven app launcher for Windows",
   "homepage": "https://github.com/fu-foo/FuWinLauncher",
   "license": "Apache-2.0",
   "architecture": {
     "64bit": {
-      "url": "https://github.com/fu-foo/FuWinLauncher/releases/download/v1.2.2/FuWinLauncher-x64.exe#/FuWinLauncher.exe",
-      "hash": "67b93c21804b18a4e3b1d5ce320655c2c324fc641f6e204839766feea7637ac4"
+      "url": "https://github.com/fu-foo/FuWinLauncher/releases/download/v1.2.3/FuWinLauncher-x64.exe#/FuWinLauncher.exe",
+      "hash": "d21c4890ee5ea43858cf644ab3b7162c78f83c701f3d4accd68ea6aecdeec6d6"
     },
     "32bit": {
-      "url": "https://github.com/fu-foo/FuWinLauncher/releases/download/v1.2.2/FuWinLauncher-x86.exe#/FuWinLauncher.exe",
-      "hash": "88c6072f851594e11f5701f44c0a27ea231279f6e533907aa36ab6bc0adf0eb0"
+      "url": "https://github.com/fu-foo/FuWinLauncher/releases/download/v1.2.3/FuWinLauncher-x86.exe#/FuWinLauncher.exe",
+      "hash": "b4809f0bf015eee744ab9fb8fcf4caf929ee2752b6ef9ec1a675bdce8d804216"
     }
   },
   "pre_install": "if (!(Test-Path \"$persist_dir\\config.ini\")) { New-Item \"$dir\\config.ini\" -ItemType File | Out-Null }",
